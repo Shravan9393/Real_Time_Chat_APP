@@ -1,0 +1,19 @@
+{
+  "name": "real_time_chat",
+  "version": "1.0.0",
+  "description": "Making A real time chat Application",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon -r dotenv/config --experimental-json-modules src/index.js"
+  },
+  "author": "Shravan",
+  "license": "ISC",
+  "dependencies": {
+    "@socket.io/cluster-adapter": "^0.2.2",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "prettier": "^3.4.2",
+    "socket.io": "^4.8.1"
+  }
+}
