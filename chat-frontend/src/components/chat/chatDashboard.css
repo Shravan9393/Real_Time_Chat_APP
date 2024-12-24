@@ -1,0 +1,37 @@
+.chat-dashboard {
+  display: flex;
+  height: 100vh;
+  font-family: 'Arial', sans-serif;
+}
+
+.sidebar {
+  width: 30%;
+  background-color: #f7f9fc;
+  border-right: 1px solid #ddd;
+  padding: 10px;
+}
+
+.sidebar h2 {
+  margin: 0;
+  padding: 15px 0;
+  color: #333;
+  font-size: 20px;
+  border-bottom: 1px solid #ddd;
+}
+
+.chat-list {
+  list-style: none;
+  padding: 0;
+}
+
+.chat-list li {
+  padding: 10px;
+  cursor: pointer;
+  color: #555;
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.3s ease;
+}
+
+.chat-list li:hover {
+  background-color: #d9f7d9;
+}

@@ -1,5 +1,12 @@
 // Establish connection to the server
-const socket = io();
+const socket = io({
+  auth: {
+    serverOffset : 0
+  },
+  // enable retries
+  askTimeout: 10000,
+  retries: 3,
+});
 
 // Ensure DOM is fully loaded before running
 document.addEventListener("DOMContentLoaded", () => {
