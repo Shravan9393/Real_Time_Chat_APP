@@ -4,8 +4,6 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import path from "path";
-import jwt from "jsonwebtoken";
-import mongoose from "mongoose";
 
 
 // Handler to register a new user.

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { registerUser } from "../controllers/user.controller.js";
-import { upload } from "../../../../LACTURE2_MERN/src/middlewares/multer.middleware.js";
+import { upload } from "../middlewares/multer.middleware.js";
 
 
 // Creating an instance of Router
