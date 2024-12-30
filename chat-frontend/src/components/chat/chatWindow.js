@@ -4,7 +4,13 @@ import MessageInput from "./messageInput";
 import "./chatWindow.css";
 
 const ChatWindow = () => {
-  const { messages } = useContext(ChatContext);
+  const context = useContext(ChatContext);
+
+  if (!context) {
+    return <div>Error: Chat context is not available.</div>;
+  }
+
+  const { messages } = context;
 
   return (
     <div className="chat-window">

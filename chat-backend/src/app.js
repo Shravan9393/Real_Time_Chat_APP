@@ -9,9 +9,9 @@ const app = express();
 // Add your middlewares, routes, and other configurations here
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN,
+    origin: process.env.CORS_ORIGIN || "*",
     credentials: true,
-  }) 
+  })
 );
 
 app.use(express.json({ limit: "16kb" }));
