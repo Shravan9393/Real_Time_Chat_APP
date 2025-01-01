@@ -15,10 +15,22 @@ const ProfileForm = ({ onSave }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <label>Name</label>
-      <input name="name" value={profile.name} onChange={handleChange} />
-      <label>Email</label>
-      <input name="email" value={profile.email} onChange={handleChange} />
+      <label htmlFor="name">Name</label>
+      <input
+        id="name"
+        name="name"
+        value={profile.name}
+        onChange={handleChange}
+        placeholder="Enter your name"
+      />
+      <label htmlFor="email">Email</label>
+      <input
+        id="email"
+        name="email"
+        value={profile.email}
+        onChange={handleChange}
+        placeholder="Enter your email"
+      />
       <button type="submit">Save</button>
     </form>
   );

@@ -3,7 +3,11 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import http from "http";
 import { Server } from "socket.io";
+
+// imports routes
+
 import userRouter from "./routes/user.routes.js";
+import chatRouter from "./routes/chat.routes.js";
 
 const app = express();
 const server = http.createServer(app);
@@ -15,6 +19,8 @@ const io = new Server(server, {
   },
 });
 
+
+
 // Middleware
 app.use(cors({ origin: process.env.CORS_ORIGIN || "*", credentials: true }));
 app.use(express.json({ limit: "16kb" }));
@@ -22,8 +28,10 @@ app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public"));
 app.use(cookieParser());
 
-// Routes
+// Routes declaration
+
 app.use("/api/v1/users", userRouter);
+app.use("/api/v1/chat", chatRouter);
 
 // Socket.IO setup
 io.on("connection", (socket) => {

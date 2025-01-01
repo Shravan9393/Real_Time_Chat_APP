@@ -13,41 +13,61 @@ import ForgotPasswordPage from "./components/auth/ForgotPasswordPage";
 import ChatDashboard from "./components/chat/chatDashboard";
 import ProfilePage from "./components/profile/profilePage";
 
-function App() {
-  const { user } = useContext(AuthContext); // Destructure user from AuthContext
+const ProtectedRoute = ({ element, redirectTo, reverse = false }) => {
+  const { user } = useContext(AuthContext);
+  if (reverse) {
+    return user ? <Navigate to={redirectTo} /> : element;
+  }
+  return user ? element : <Navigate to={redirectTo} />;
+};
 
+function App() {
   return (
-    <Router>
-      <AuthProvider>
+    <AuthProvider>
+      <Router>
         <Navbar />
         <div className="container">
           <Routes>
-            {/* If the user is already logged in, go directly to the chat dashboard */}
             <Route
               path="/"
-              element={user ? <ChatDashboard /> : <Navigate to="/register" />}
+              element={
+                <ProtectedRoute
+                  element={<ChatDashboard />}
+                  redirectTo="/register"
+                />
+              }
             />
             <Route
               path="/register"
-              element={user ? <Navigate to="/" /> : <RegisterPage />}
+              element={
+                <ProtectedRoute
+                  element={<RegisterPage />}
+                  redirectTo="/"
+                  reverse
+                />
+              }
             />
             <Route
               path="/login"
-              element={user ? <Navigate to="/" /> : <LoginPage />}
+              element={
+                <ProtectedRoute
+                  element={<LoginPage />}
+                  redirectTo="/"
+                  reverse
+                />
+              }
             />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             <Route
-              path="/chat"
-              element={user ? <ChatDashboard /> : <Navigate to="/login" />}
-            />
-            <Route
               path="/profile"
-              element={user ? <ProfilePage /> : <Navigate to="/login" />}
+              element={
+                <ProtectedRoute element={<ProfilePage />} redirectTo="/login" />
+              }
             />
           </Routes>
         </div>
-      </AuthProvider>
-    </Router>
+      </Router>
+    </AuthProvider>
   );
 }
 
