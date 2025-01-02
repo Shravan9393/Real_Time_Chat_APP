@@ -1,22 +1,27 @@
 .chat-dashboard {
   display: flex;
+  flex-direction: column;
   height: 100vh;
-  font-family: 'Arial', sans-serif;
+}
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #004d40;
+  color: white;
+}
+
+.dashboard-body {
+  display: flex;
+  flex: 1;
 }
 
 .sidebar {
-  width: 30%;
-  background-color: #f7f9fc;
+  width: 25%;
+  background-color: #f5f5f5;
+  padding: 20px;
   border-right: 1px solid #ddd;
-  padding: 10px;
-}
-
-.sidebar h2 {
-  margin: 0;
-  padding: 15px 0;
-  color: #333;
-  font-size: 20px;
-  border-bottom: 1px solid #ddd;
 }
 
 .chat-list {
@@ -26,12 +31,10 @@
 
 .chat-list li {
   padding: 10px;
+  border-bottom: 1px solid #ddd;
   cursor: pointer;
-  color: #555;
-  border-bottom: 1px solid #eee;
-  transition: background-color 0.3s ease;
 }
 
 .chat-list li:hover {
-  background-color: #d9f7d9;
+  background-color: #e0f7fa;
 }
