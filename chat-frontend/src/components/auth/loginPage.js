@@ -26,6 +26,7 @@ const LoginPage = () => {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           required
+          autoComplete="current-password"
         />
         <label>Password</label>
         <input
@@ -33,6 +34,7 @@ const LoginPage = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
+          autoComplete="current-password"
         />
         <button type="submit">Login</button>
       </form>

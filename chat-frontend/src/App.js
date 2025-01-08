@@ -25,8 +25,8 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        <Navbar />
         <div className="container">
+          <Navbar /> {/* Navbar remains globally here */}
           <Routes>
             <Route
               path="/"
