@@ -6,6 +6,7 @@ import axios from "axios";
 
 const ChatDashboard = () => {
   const [users, setUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,6 +29,10 @@ const ChatDashboard = () => {
     navigate("/login");
   };
 
+  const selectUser = (user) => {
+    setSelectedUser(user);
+  };
+
   return (
     <div className="chat-dashboard">
       <header className="dashboard-header">
@@ -42,11 +47,27 @@ const ChatDashboard = () => {
           <h2>Chats</h2>
           <ul className="chat-list">
             {users.map((user) => (
-              <li key={user.id}>{user.username}</li>
+              <li
+                key={user.id}
+                className={`chat-item ${
+                  selectedUser?.id === user.id ? "active" : ""
+                }`}
+                onClick={() => selectUser(user)}
+              >
+                {user.username}
+              </li>
             ))}
           </ul>
         </div>
-        <ChatWindow />
+        <div className="chat-window-container">
+          {selectedUser ? (
+            <ChatWindow user={selectedUser} />
+          ) : (
+            <div className="no-chat-selected">
+              Select a chat to start messaging.
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -1,22 +1,74 @@
-import React, { useState } from "react";
+import React from "react";
+import { Link, useLocation } from "react-router-dom";
 import "./navbar.css";
 
-const Navbar = ({ onToggleView }) => {
-  const [isProfileView, setIsProfileView] = useState(false);
+const Navbar = () => {
+  const location = useLocation();
 
-  // Handle the view toggle logic and call the onToggleView function passed from parent
-  const handleToggle = () => {
-    setIsProfileView((prev) => !prev);
-    onToggleView(!isProfileView); // Pass the updated view state to parent component
+  const renderLinks = () => {
+    switch (location.pathname) {
+      case "/register":
+        return (
+          <>
+            <Link to="/login" className="nav-link">
+              Login
+            </Link>
+          </>
+        );
+      case "/login":
+        return (
+          <>
+            <Link to="/register" className="nav-link">
+              Register
+            </Link>
+            <Link to="/forgot-password" className="nav-link">
+              Forgot Password
+            </Link>
+          </>
+        );
+      case "/":
+        return (
+          <>
+            <Link to="/profile" className="nav-link">
+              Profile
+            </Link>
+            <Link to="/logout" className="nav-link">
+              Logout
+            </Link>
+          </>
+        );
+      case "/profile":
+        return (
+          <>
+            <Link to="/" className="nav-link">
+              Chat Dashboard
+            </Link>
+            <Link to="/logout" className="nav-link">
+              Logout
+            </Link>
+          </>
+        );
+      default:
+        return (
+          <>
+            <Link to="/login" className="nav-link">
+              Login
+            </Link>
+            <Link to="/register" className="nav-link">
+              Register
+            </Link>
+          </>
+        );
+    }
   };
 
   return (
-    <div className="navbar">
-      <h1>{isProfileView ? "Profile Dashboard" : "Chat App"}</h1>
-      <button onClick={handleToggle} className="toggle-button">
-        {isProfileView ? "Go to Chat" : "View Profile"}
-      </button>
-    </div>
+    <nav className="navbar">
+      <div className="navbar-title">
+        {location.pathname === "/" ? "Chat Dashboard" : "Real Time Chat App"}
+      </div>
+      <div className="navbar-links">{renderLinks()}</div>
+    </nav>
   );
 };
 

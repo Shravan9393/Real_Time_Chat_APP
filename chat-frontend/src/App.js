@@ -26,7 +26,7 @@ function App() {
     <AuthProvider>
       <Router>
         <div className="container">
-          <Navbar /> {/* Navbar remains globally here */}
+          <Navbar />
           <Routes>
             <Route
               path="/"
@@ -58,6 +58,15 @@ function App() {
               }
             />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route
+              path="/chat"
+              element={
+                <ProtectedRoute
+                  element={<ChatDashboard />}
+                  redirectTo="/login"
+                />
+              }
+            />
             <Route
               path="/profile"
               element={

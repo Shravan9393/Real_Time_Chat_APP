@@ -1,28 +1,43 @@
-import React, { useContext } from "react";
-import { ChatContext } from "../../context/chatContext";
-import MessageInput from "./messageInput";
+import React, { useState } from "react";
 import "./chatWindow.css";
 
-const ChatWindow = () => {
-  const { messages } = useContext(ChatContext);
+const ChatWindow = ({ user }) => {
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState("");
 
-  if (!messages) {
-    return <div>Loading messages...</div>;
-  }
+  const handleSendMessage = () => {
+    if (newMessage.trim()) {
+      setMessages([...messages, { sender: "You", text: newMessage }]);
+      setNewMessage("");
+    }
+  };
 
   return (
     <div className="chat-window">
+      <header className="chat-header">
+        <h2>Chat with {user.username}</h2>
+      </header>
       <div className="messages">
-        {messages.map((msg, index) => (
+        {messages.map((message, index) => (
           <div
             key={index}
-            className={`message ${msg.sender === "You" ? "sent" : "received"}`}
+            className={`message ${
+              message.sender === "You" ? "sent" : "received"
+            }`}
           >
-            {msg.text}
+            <p>{message.text}</p>
           </div>
         ))}
       </div>
-      <MessageInput />
+      <footer className="chat-footer">
+        <input
+          type="text"
+          placeholder="Type a message..."
+          value={newMessage}
+          onChange={(e) => setNewMessage(e.target.value)}
+        />
+        <button onClick={handleSendMessage}>Send</button>
+      </footer>
     </div>
   );
 };
