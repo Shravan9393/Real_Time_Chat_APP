@@ -1,49 +1,91 @@
-import { Message } from "../models/chat.models.js";
+import { Chat } from "../models/chat.models.js";
 import { ApiError } from "../utils/ApiError.js";;
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler}  from "../utils/asyncHandler.js";
 import { User } from "../models/user.models.js";
 
-const getChatHistory = asyncHandler ( async (req, res) => {
-    try {
-        // get the userId and currentUserId form pramas and user
-        const { userId } = req.params;
-        const { currentUserId } = req.user;
+// acess the chat 
 
-        // validate users
+const getChatAccess = asyncHandler( async (req, res) => {
+    // get the userId from the req.params
+    const { userId } = req.params;
 
-        const sender = await User.findById(currentUserId).select("username avatar");
-        const receiver = await User.findById(userId).select("username avatar");
+    if(!userId){
+        throw new ApiError(401, "userId is required to get chat access");
+    }
+    // let there some chat Exist
+    let chatExists = await Chat.find({
+        isGroupChat: false,
+        $and:[
+            {users: { $elemMatch: { $eq: userId }}},
+            {users: { $elemMatch: { $eq: req.User._id }}},
+        ],
+    })
+    .populate("users", "-password")
+    .populate("newMessage");
 
-        if(!sender || !receiver){
-            throw new ApiError(404, "User not found")
-        }
+    chatExists = await User.populate(chatExists, {
+      path: "newMessage.sender",
+      select: "username email fullName  avatar",
+    });
 
-        // fetch chat history
-        const messages = await Message.find({
-            $or:[
-                {
-                    sender : currentUserId,
-                    receiver: userId
-                },
-                {
-                    sender: userId,
-                    receiver: currentUserId
-                }
-            ],
-        }).sort({timestamp: 1});
-
+    if(chatExists.length > 0){
         return res
         .status(200)
         .json(
-            new ApiResponse(200, { messages }, "message send and recevied successfully")
+            new ApiResponse(200, { chat: chatExists[0] }, "Chat exists")
         );
+    }else{
+        let newChatData = {
+          chatName: "sender",
+          users: [userId, req.user._id],
+          isGroupChat : false,
+        };
+    }
 
+    try {
+        const newMessage = await Chat.create(newChatData);
+        const chat = await Chat.findById(newMessage?._id).populate("users", "-password")
+        return res
+        .status(201)
+        .json(
+            new ApiResponse(201, { chat }, "Chat created successfully") 
+        );
     } catch (error) {
-        throw new ApiError(500, "Failed to fetch chat history");
+        throw new ApiError(500,error ,"Failed to create chat , or getting the chat data");
     }
 
 });
+
+// get chat history and all chat
+
+const getChatHistory = asyncHandler ( async (req, res) => {
+    try {
+            const chat = await Chat.find({
+                users: { $elemMatch: { $eq: req?.user?._id }},
+            })
+            .populate("users", "-password")
+            .populate("newMessage")
+            .populate("groupAdmin")
+            .sort({updatedAt: -1});
+    
+            const finalChat = await User.populate(chat, {
+                path: "newMessage.sender",
+                select: "username email fullName avatar",
+            });
+            return res
+            .status(200)
+            .json(
+                new ApiResponse(200, { chat: finalChat }, "Chat history fetched successfully")
+            );
+    
+    } catch (error) {
+        throw new ApiError(500,error, "Failed to fetch chat history");
+        console.log(error);
+    }
+});
+
+// create group.
 
 const saveMessage = async(req, res) => {
     try {

@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import ChatWindow from "./chatWindow";
 import "./chatDashboard.css";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const ChatDashboard = () => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   useEffect(() => {
     axios
@@ -20,28 +20,12 @@ const ChatDashboard = () => {
       });
   }, []);
 
-  const handleViewProfile = () => {
-    navigate("/profile");
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
-  };
-
   const selectUser = (user) => {
     setSelectedUser(user);
   };
 
   return (
     <div className="chat-dashboard">
-      <header className="dashboard-header">
-        <h1>Chat App</h1>
-        <div className="nav-buttons">
-          <button onClick={handleViewProfile}>View Profile</button>
-          <button onClick={handleLogout}>Logout</button>
-        </div>
-      </header>
       <div className="dashboard-body">
         <div className="sidebar">
           <h2>Chats</h2>

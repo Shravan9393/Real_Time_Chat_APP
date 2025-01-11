@@ -251,4 +251,143 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
 });
 
-export { registerUser, loginUser, logoutUser, refreshAccessToken };
+
+// Handle to search user , i think by username 
+
+const searchUser =  asyncHandler( async (req, res) =>{
+    const search = req.query.search ? {
+      $or: [
+        { username: { $regex: req.query.search, $options: "i" } },
+        { fullName: { $regex: req.query.search, $options: "i" } },
+      ],  
+    } : {};
+
+    const user = await User.find(search).find({ _id: { $ne: req.user._id } });
+    return res
+    .status(200)
+    .json(new ApiResponse(200, user, "Users found successfully"));
+});
+
+// Handler to get user by ID
+
+const getUserById = asyncHandler( async (req, res) => {
+  const userId = req.params.id;
+  try {
+    if(!userId){
+      throw new ApiError(400, "User ID is required");
+    }
+  
+    if(!mongoose.Types.ObjectId.isValid(userId)){
+      throw new ApiError(400, "Invalid user ID");
+    }
+  
+    const user = await User.findById(userId).select("-password -refreshToken");
+    return res
+    .status(200)
+    .json(new ApiResponse(200, user, "User found successfully"));
+  } catch (error) {
+    throw new ApiError(400, error?.message || "User not found");
+  }
+
+});
+
+// Handler to update user profile
+ 
+const updateAccountDetails = asyncHandler(async (req, res) => {
+  // getting the details to update
+  const { fullName, email } = req.body;
+
+  if (!fullName || !email) {
+    throw new ApiError(400, "All fields are required");
+  }
+
+  const user = await User.findByIdAndUpdate(
+    req.user?._id,
+    {
+      $set: {
+        fullName,
+        email: email,
+      },
+    },
+    { new: true } // Return the updated user document
+  ).select("-password"); // Exclude password from response
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, user, "Account details updated successfully"));
+});
+
+// Handler to update user avatar
+
+const updateUserAvatar = asyncHandler(async (req, res) => {
+  const avatarLocalPath = req.file?.path; // Get avatar file path
+
+  if (!avatarLocalPath) {
+    throw new ApiError(400, "Avatar file is missing");
+  }
+
+  const avatar = await uploadOnCloudinary(avatarLocalPath); // Upload avatar to Cloudinary
+
+  if (!avatar.url) {
+    throw new ApiError(400, "Error while uplaoding on avatar");
+  }
+  const user = await User.findByIdAndUpdate(
+    req.user?._id,
+    {
+      $set: {
+        avatar: avatar.url,
+      },
+    },
+    { new: true }
+  ).select("-password");
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, user, "Avatar updated successfully"));
+
+  // after updating avtar, delete the priviously
+  // uplaoded avatar , write the utility function for this
+  // assignment
+});
+
+// Handler to update user cover image
+const updateUserCoverImage = asyncHandler(async (req, res) => {
+  const coverImageLocalPath = req.file?.path; // Get cover image file path
+
+  if (!coverImageLocalPath) {
+    throw new ApiError(400, "coverImage file is missing");
+  }
+
+  const coverImage = await uploadOnCloudinary(coverImageLocalPath);
+
+  if (!coverImage.url) {
+    throw new ApiError(400, "Error while uplaoding on coverImage");
+  }
+  const user = await User.findByIdAndUpdate(
+    req.user?._id,
+    {
+      $set: {
+        coverImage: coverImage.url,
+      },
+    },
+    { new: true }
+  ).select("-password");
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, user, "coverImage updated successfully"));
+});
+
+
+
+export { 
+  registerUser,
+  loginUser,
+  logoutUser,
+  refreshAccessToken,
+  searchUser,
+  getUserById,
+  updateAccountDetails,
+  updateUserAvatar,
+  updateUserCoverImage
+ };
