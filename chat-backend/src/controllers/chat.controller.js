@@ -86,46 +86,115 @@ const getChatHistory = asyncHandler ( async (req, res) => {
 });
 
 // create group.
-
-const saveMessage = async(req, res) => {
-    try {
-        const { sender, receiver, message } = req.body;
-
-
-        if(!sender || !receiver || !message){
-            throw new ApiError(401, "sender , receiver and message are required for the req.body to save the message")
+const createGroup = asyncHandler( async (req, res) => {
+        const { chatName, users } = req.body;
+        if(!chatName || !users){
+            throw new ApiError(401, "chatName and users are required to create a group");   
         }
 
-        // validate sender and receiver
-
-        const senderUser = await User.findById(sender);
-        const receiverUser = await User.findById(receiver);
-
-        // check we have got or not
-
-        if(!senderUser || !receiverUser){
-            throw new ApiError(401, "Invalid sender or receiver")
+        const parsedUsers = JSON.parse(users);
+        if(parsedUsers.length < 2){
+            throw new ApiError(401, "Group must have atleast 2 users");
         }
 
-        // save the message
+        parsedUsers.push(req.user._id);
 
-        const newMessage = new Message({
-          sender,
-          receiver,
-          message,
-        });
-        const savedMessage = await newMessage.save();
+        try {
+            const chat = await Chat.create({
+                chatName : chatName,
+                users: parsedUsers,
+                isGroupChat: true,  
+                groupAdmin: req.user._id,
+            });
 
-        return res
-        .status(201)
-        .json({
-            success: true,
-            message: savedMessage
-        });
+            const finalChat = await Chat.findById(chat?._id)
+              .populate("users", "-password")
+              .populate("groupAdmin", "-password");
+            
+            return res
+            .status(201)
+            .json(
+                new ApiResponse(201, { chat: finalChat }, "Group created successfully")
+            );
+        } catch (error) {
+            throw new ApiError(500, error, "Failed to create group");
+        }
 
-    } catch (error) {
-        throw new ApiError(400, {error}, "failed to save message")
+});
+
+// add user or new member to the group
+
+const addGroupMember = asyncHandler( async (req, res) => {
+    const {userId, chatId} = req.body;
+
+    if(!userId || !chatId){
+        throw new ApiError(401, "userId and chatId are required to add a memebr to the group");
     }
-}
 
-export { getChatHistory, saveMessage };
+    const existingChat = await Chat.findById(chatId);
+    if (!existingChat.users.includes(userId)) {
+      const chat = await Chat.findByIdAndUpdate(chatId, {
+        $push: { users: userId },
+      })
+        .populate("users", "-password")
+        .populate("groupAdmin", "-password");
+
+      if (!chat) {
+        throw new ApiError(500, "Failed to add user to the group");
+      }
+
+      return res
+        .status(200)
+        .json(
+          new ApiResponse(200, { chat }, "User added to the group successfully")
+        );
+    } else {
+      return res
+        .status(200)
+        .json(
+          new ApiResponse(
+            200,
+            { chat: existing },
+            "User already exists in the group"
+          )
+        );
+    }
+});
+
+// remove user from the group
+
+const removegroupMember = asyncHandler( async (req, res) => {
+    const { userId, chatId } = req.body;
+
+    if(!userId || !chatId){
+        throw new ApiError(401, "UserId and chatId are required to remove a member from the group");
+    }
+
+    const existingChat = await Chat.findById(chatId);
+    if(existingChat.users.includes(userId)){
+        try {
+            const chat = await Chat.findByIdAndUpdate(chatId, {
+                $pull: { users: userId },
+            })
+            .populate("users", "-password")
+            .populate("groupAdmin", "-password");
+
+            return res
+            .status(200)
+            .json(
+                new ApiResponse(200, { chat }, "User removed from the group successfully")
+            );
+        } catch (error) {
+            throw new ApiError(500, error, "Failed to remove user from the group");
+        }
+    }else{
+        return res
+        .status(200)
+        .json(
+            new ApiResponse(200, { chat: existingChat}, "User does not exist in the group")
+        )
+    }
+});
+
+
+export { getChatAccess, getChatHistory, createGroup, addGroupMember, removegroupMember };

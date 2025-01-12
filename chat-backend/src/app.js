@@ -8,10 +8,13 @@ import { Server } from "socket.io";
 
 import userRouter from "./routes/user.routes.js";
 import chatRouter from "./routes/chat.routes.js";
+import messageRouter from "./routes/message.routes.js";
+
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
+  pingTimeout: 60000,
   cors: {
     origin: process.env.CORS_ORIGIN || "http://localhost:3000",
     methods: ["GET", "POST"],
@@ -32,17 +35,41 @@ app.use(cookieParser());
 
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/chat", chatRouter);
+app.use("/api/v1/message", messageRouter);
 
 // Socket.IO setup
 io.on("connection", (socket) => {
-  console.log("User connected: ", socket.id);
-
-  socket.on("sendMessage", (message) => {
-    socket.broadcast.emit("receiveMessage", message);
+  
+  socket.on('setup', (userData) => {
+    socket.join(userData._id);
+    socket.emit('connected')
   });
 
-  socket.on("disconnect", () => {
-    console.log("User disconnected: ", socket.id);
+  socket.on("joinRoom", (room) => {
+    socket.join(room);
+  });
+
+  socket.on("typing", (room) => {
+    socket.in(room).emit("typing");
+  });
+
+  socket.on("stopTyping", (room) => {
+    socket.in(room).emit("stopTyping");
+  });
+
+  socket.on("new message", (newMessageRecieve) => {
+    var chat = newMessageRecieve.chatId;
+    if(!chat.users){
+      console.log("chats. users is not defined")
+    }
+
+    chat.users.forEach((user) => {
+      if(user._id == newMessageRecieve.sender._id){
+        return;
+      }
+
+      socket.in(user._id).emit("new message", newMessageRecieve);
+    });
   });
 });
 
