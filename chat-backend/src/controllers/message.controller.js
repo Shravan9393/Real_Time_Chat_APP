@@ -9,44 +9,45 @@ import { model } from "mongoose";
 // send message
 
 const sendMessage = asyncHandler( async (req, res) => {
-    const {chatId , message} = req.body;
-    if(!chatId || !message){
-        throw new ApiError(401, "chatId and message are required to send a message");
+    const { chatId, message: messageText } = req.body;
+    if (!chatId || !messageText) {
+      throw new ApiError(
+        401,
+        "chatId and message are required to send a message"
+      );
     }
 
     try {
-        let message = await Message.create({
-            sender : req.user._id,
-            message,
-            chatId,
+        let newMessage = await Message.create({
+          sender: req.user._id,
+          message: messageText,
+          chatId,
         });
 
-        message = await (
-          await Message.populate(
-            "sender",
-            "fullName avatar username",
-            "-password"
-          )
-        ).populate({
-          path: "chatId",
-          select: "chatName isGroupChat users",
-          model : Chat,
-          populate: {
-            path: "users",
-            select: "fullName username email avatar",
-            model: User,
-          }
-        });
+        newMessage = await Message.findById(newMessage._id)
+          .populate("sender", "fullName avatar username")
+          .populate({
+            path: "chatId",
+            select: "chatName isGroupChat users",
+            populate: {
+              path: "users",
+              select: "fullName username email avatar",
+            },
+          });
 
         await Chat.findByIdAndUpdate(chatId, {
-            newMessage: message,
-        })
+          newMessage: newMessage._id,
+        });
 
         return res
-        .status(201)
-        .json(
-            new ApiResponse(201, { message }, "Message sent successfully")
-        );
+          .status(201)
+          .json(
+            new ApiResponse(
+              201,
+              { message: newMessage },
+              "Message sent successfully"
+            )
+          );
     } catch (error) {
         throw new ApiError(500, error, "Failed to send message");
     }

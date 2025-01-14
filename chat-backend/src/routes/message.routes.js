@@ -7,7 +7,7 @@ const router = Router();
 
 // Route to handle getting messages
 router.route("/sendMessage").post(verifyJWT, sendMessage);
-router.route("/getMessages").get(verifyJWT, getMessages);
+router.route("/getMessages/:chatId").get(verifyJWT, getMessages);
 
 
 export default router;

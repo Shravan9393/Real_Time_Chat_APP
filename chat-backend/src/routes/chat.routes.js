@@ -11,7 +11,7 @@ import { verifyJWT } from "../middlewares/auth.middleware.js";
 // Creating an instance of Router
 const router = Router();
 
-router.route("/getChatAccess").post(verifyJWT, getChatAccess);
+router.route("/getChatAccess/:userId").get(verifyJWT, getChatAccess);
 router.route("/getChatHistory").get(verifyJWT, getChatHistory);
 router.route("/createGroup").post(verifyJWT, createGroup);
 router.route("/addGroupMember").patch(verifyJWT, addGroupMember);

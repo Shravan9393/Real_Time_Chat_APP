@@ -18,7 +18,7 @@ const getChatAccess = asyncHandler( async (req, res) => {
         isGroupChat: false,
         $and:[
             {users: { $elemMatch: { $eq: userId }}},
-            {users: { $elemMatch: { $eq: req.User._id }}},
+            {users: { $elemMatch: { $eq: req.user._id }}},
         ],
     })
     .populate("users", "-password")
@@ -28,7 +28,7 @@ const getChatAccess = asyncHandler( async (req, res) => {
       path: "newMessage.sender",
       select: "username email fullName  avatar",
     });
-
+    let newChatData;
     if(chatExists.length > 0){
         return res
         .status(200)
@@ -36,7 +36,7 @@ const getChatAccess = asyncHandler( async (req, res) => {
             new ApiResponse(200, { chat: chatExists[0] }, "Chat exists")
         );
     }else{
-        let newChatData = {
+        newChatData = {
           chatName: "sender",
           users: [userId, req.user._id],
           isGroupChat : false,
@@ -185,11 +185,11 @@ const removegroupMember = asyncHandler( async (req, res) => {
                 new ApiResponse(200, { chat }, "User removed from the group successfully")
             );
         } catch (error) {
-            throw new ApiError(500, error, "Failed to remove user from the group");
+            throw new ApiError(500,  "Failed to remove user from the group");
         }
     }else{
         return res
-        .status(200)
+        .status(400)
         .json(
             new ApiResponse(200, { chat: existingChat}, "User does not exist in the group")
         )
