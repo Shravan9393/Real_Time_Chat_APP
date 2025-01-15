@@ -254,19 +254,48 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
 // Handle to search user , i think by username 
 
-const searchUser =  asyncHandler( async (req, res) =>{
-    const search = req.query.search ? {
-      $or: [
-        { username: { $regex: req.query.search, $options: "i" } },
-        { fullName: { $regex: req.query.search, $options: "i" } },
-      ],  
-    } : {};
+const searchUser = asyncHandler(async (req, res) => {
+  const searchQuery = req.query.search;
 
-    const user = await User.find(search).find({ _id: { $ne: req.user._id } });
+  // Handle missing search query
+  if (!searchQuery) {
     return res
-    .status(200)
-    .json(new ApiResponse(200, user, "Users found successfully"));
+      .status(400)
+      .json(new ApiResponse(400, null, "Search query is required."));
+  }
+
+  // Search logic
+  const search = {
+    $or: [
+      { username: { $regex: searchQuery, $options: "i" } },
+      { fullName: { $regex: searchQuery, $options: "i" } },
+    ],
+  };
+
+  try {
+    const users = await User.find(search).find({ _id: { $ne: req.user._id } });
+
+    if (!users.length) {
+      return res
+        .status(404)
+        .json(
+          new ApiResponse(404, null, "No users found matching your query.")
+        );
+    }
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, users, "Users found successfully"));
+  } catch (error) {
+    return res
+      .status(500)
+      .json(
+        new ApiResponse(500, null, "An error occurred while searching users.")
+      );
+  }
 });
+
+
 
 // Handler to get user by ID
 

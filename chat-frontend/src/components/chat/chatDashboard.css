@@ -23,6 +23,23 @@
   color: #2c3e50;
 }
 
+/* Search Bar */
+.search-bar {
+  width: 100%;
+  padding: 8px 10px;
+  margin-bottom: 10px;
+  border: 1px solid #bdc3c7;
+  border-radius: 5px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.search-bar:focus {
+  border-color: #3498db;
+}
+
+/* Chat List */
 .chat-list {
   list-style: none;
   padding: 0;
@@ -47,6 +64,35 @@
   color: white;
 }
 
+/* Search Results */
+.search-results {
+  margin-top: 15px;
+  border-top: 1px solid #bdc3c7;
+  padding-top: 10px;
+}
+
+.search-results h3 {
+  font-size: 1rem;
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+.search-result-item {
+  padding: 8px 10px;
+  background-color: #ffffff;
+  border: 1px solid #bdc3c7;
+  border-radius: 5px;
+  margin-bottom: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.search-result-item:hover {
+  background-color: #f9f9f9;
+  border-color: #3498db;
+}
+
+/* Chat Window */
 .chat-window-container {
   flex: 1;
   display: flex;

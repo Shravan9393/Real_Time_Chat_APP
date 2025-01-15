@@ -1,11 +1,12 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContext";
+// import { AuthContext } from "../../context/AuthContext";
+
 import API from "../../utils/api.js";
 import "./auth.css";
 
 const RegisterPage = () => {
-  const { login } = useContext(AuthContext);
+  // const  login  = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
@@ -14,13 +15,6 @@ const RegisterPage = () => {
   const [coverImage, setCoverImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
-  // const handleFileChange = (e, setFile) => {
-  //   const file = e.target.files[0];
-  //   if (file) {
-  //     setFile(file);
-  //   }
-  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -46,13 +40,6 @@ const RegisterPage = () => {
       console.log("registeration form submitted");
       alert("registeration form submitted");
       console.log("Server Response:", response.data); // Log the response for debugging
-      // setSuccess(
-      //   response.data.message ||
-      //     "Registration successful! Redirecting to login..."
-      // );
-      // setTimeout(() => {
-      //   navigate("/login");
-      // }, 2000);
       navigate("/login");
     } catch (err) {
       console.error("Registration Error:", err.response || err.message);

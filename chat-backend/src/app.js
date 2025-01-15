@@ -4,45 +4,41 @@ import cookieParser from "cookie-parser";
 import http from "http";
 import { Server } from "socket.io";
 
-// imports routes
-
+// Import routes
 import userRouter from "./routes/user.routes.js";
 import chatRouter from "./routes/chat.routes.js";
 import messageRouter from "./routes/message.routes.js";
 
-
 const app = express();
 const server = http.createServer(app);
+
+// Setup Socket.IO with CORS and path configuration
 const io = new Server(server, {
-  pingTimeout: 60000,
+  path: "/socket.io/", // Ensure this matches the client configuration
   cors: {
-    origin: process.env.CORS_ORIGIN || "http://localhost:3000",
+    origin: "http://localhost:3000", // Replace with your client origin
     methods: ["GET", "POST"],
-    credentials: true,
   },
 });
-
-
 
 // Middleware
 app.use(cors({ origin: process.env.CORS_ORIGIN || "*", credentials: true }));
 app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
-app.use(express.static("public"));
 app.use(cookieParser());
+app.use(express.static("public"));
 
 // Routes declaration
-
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/chat", chatRouter);
 app.use("/api/v1/message", messageRouter);
 
-// Socket.IO setup
 io.on("connection", (socket) => {
-  
-  socket.on('setup', (userData) => {
+  console.log("Socket connected:", socket.id);
+
+  socket.on("setup", (userData) => {
     socket.join(userData._id);
-    socket.emit('connected')
+    socket.emit("connected");
   });
 
   socket.on("joinRoom", (room) => {
@@ -58,18 +54,24 @@ io.on("connection", (socket) => {
   });
 
   socket.on("new message", (newMessageRecieve) => {
-    var chat = newMessageRecieve.chatId;
-    if(!chat.users){
-      console.log("chats. users is not defined")
+    const chat = newMessageRecieve.chatId;
+
+    if (!chat.users) {
+      console.log("Chat users not defined");
+      return;
     }
 
     chat.users.forEach((user) => {
-      if(user._id == newMessageRecieve.sender._id){
+      if (user._id === newMessageRecieve.sender._id) {
         return;
       }
 
       socket.in(user._id).emit("new message", newMessageRecieve);
     });
+  });
+
+  socket.on("disconnect", () => {
+    console.log("Socket disconnected:", socket.id);
   });
 });
 

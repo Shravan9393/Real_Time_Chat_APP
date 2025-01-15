@@ -15,9 +15,12 @@ import ProfilePage from "./components/profile/profilePage";
 
 const ProtectedRoute = ({ element, redirectTo, reverse = false }) => {
   const { user } = useContext(AuthContext);
+
+  // Handle reverse condition for ProtectedRoute
   if (reverse) {
     return user ? <Navigate to={redirectTo} /> : element;
   }
+  // Default ProtectedRoute check for authenticated user
   return user ? element : <Navigate to={redirectTo} />;
 };
 
