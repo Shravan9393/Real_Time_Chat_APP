@@ -1,4 +1,4 @@
-/* chatDashboard.css */
+/* General Chat Dashboard Styles */
 .chat-dashboard {
   display: flex;
   flex-direction: column;
@@ -37,6 +37,24 @@
 
 .search-bar:focus {
   border-color: #3498db;
+}
+
+/* Search Button */
+button {
+  width: 100%;
+  padding: 8px 10px;
+  margin-top: 10px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #2980b9;
 }
 
 /* Chat List */
@@ -78,18 +96,36 @@
 }
 
 .search-result-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 8px 10px;
   background-color: #ffffff;
   border: 1px solid #bdc3c7;
   border-radius: 5px;
   margin-bottom: 5px;
-  cursor: pointer;
   transition: background-color 0.3s, border-color 0.3s;
 }
 
 .search-result-item:hover {
   background-color: #f9f9f9;
   border-color: #3498db;
+}
+
+/* Add Button in Search Results */
+.search-result-item button {
+  padding: 5px 10px;
+  background-color: #2ecc71;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.search-result-item button:hover {
+  background-color: #27ae60;
 }
 
 /* Chat Window */
