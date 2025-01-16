@@ -4,6 +4,58 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler}  from "../utils/asyncHandler.js";
 import { User } from "../models/user.models.js";
 
+// Hndler to add the Searched user to the chat dashboard
+
+// Handler to add the searched user to the chat dashboard
+const addSearchedUserToChat = asyncHandler(async (req, res) => {
+    const { userId } = req.body; // The ID of the user to add
+    const currentUserId = req.user._id; // Current logged-in user's ID
+
+    if (!userId) {
+        throw new ApiError(400, "User ID is required to add a user to the chat dashboard");
+    }
+
+    try {
+        // Check if a chat already exists between the users
+        let existingChat = await Chat.findOne({
+            isGroupChat: false,
+            $and: [
+                { users: { $elemMatch: { $eq: userId } } },
+                { users: { $elemMatch: { $eq: currentUserId } } }
+            ],
+        })
+            .populate("users", "-password")
+            .populate("newMessage");
+
+        // Populate sender details in the latest message
+        existingChat = await User.populate(existingChat, {
+            path: "newMessage.sender",
+            select: "username email fullName avatar",
+        });
+
+        if (existingChat) {
+            return res.status(200).json(
+                new ApiResponse(200, { chat: existingChat }, "Chat already exists")
+            );
+        }
+
+        // If no chat exists, create a new one
+        const newChat = await Chat.create({
+            chatName: "sender",
+            users: [userId, currentUserId],
+            isGroupChat: false,
+        });
+
+        const populatedChat = await Chat.findById(newChat._id).populate("users", "-password");
+
+        return res.status(201).json(
+            new ApiResponse(201, { chat: populatedChat }, "Chat created successfully")
+        );
+    } catch (error) {
+        throw new ApiError(500, "Failed to add the user to the chat dashboard");
+    }
+});
+
 // acess the chat 
 
 const getChatAccess = asyncHandler( async (req, res) => {
@@ -197,4 +249,11 @@ const removegroupMember = asyncHandler( async (req, res) => {
 });
 
 
-export { getChatAccess, getChatHistory, createGroup, addGroupMember, removegroupMember };
+export {
+    addSearchedUserToChat,
+    getChatAccess,
+    getChatHistory,
+    createGroup,
+    addGroupMember,
+    removegroupMember,
+ };
