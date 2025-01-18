@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import ChatWindow from "./chatWindow";
 import "./chatDashboard.css";
 import axios from "axios";
-// import socket from "../../utils/socekt";
 
 const ChatDashboard = () => {
   const [users, setUsers] = useState([]); // Existing chat users
@@ -13,39 +12,41 @@ const ChatDashboard = () => {
 
   // Fetch existing users (current chats) on mount
   useEffect(() => {
-    // Fetch existing chat users (ensure the token is added in headers)
-    const accessToken = localStorage.getItem("accessToken"); // Get token from localStorage
+    const fetchChatUsers = async () => {
+      const accessToken = localStorage.getItem("accessToken"); // Get token from localStorage
+      if (!accessToken) {
+        console.error("Token is missing from localStorage.");
+        return;
+      }
 
-    if (!accessToken) {
-      console.error("Token is missing from localStorage.");
-      return;
-    }
-    console.log("Sending token:", accessToken); // Log the token before sending it in the header
+      try {
+        const response = await axios.get(
+          "http://localhost:5000/api/v1/chat/getChatHistory",
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
 
-    axios
-      .get("http://localhost:5000/api/v1/chat/getChatHistory", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      })
-      .then((response) => {
-        console.log("Chat history response:", response.data);
         if (Array.isArray(response.data)) {
           setUsers(response.data);
         } else {
           console.error("Expected an array but got:", response.data);
           setUsers([]); // Fallback to an empty array
         }
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error("Failed to fetch chat history", err);
         setUsers([]); // Fallback to an empty array on error
-      });
+      }
+    };
+
+    fetchChatUsers();
   }, []);
 
   // Search for new users
   const handleSearch = async () => {
-    if (!searchQuery) {
+    if (!searchQuery.trim()) {
       setError("Search query cannot be empty");
       return;
     }
@@ -65,9 +66,7 @@ const ChatDashboard = () => {
           },
         }
       );
-      console.log("Search results:", response.data);
-      setSearchResults(response.data);
-      console.log("Search results:", response.data);
+      setSearchResults(response.data || []);
       setError(null);
     } catch (error) {
       setError(error.response?.data?.message || "Error searching for users");
@@ -87,8 +86,9 @@ const ChatDashboard = () => {
   // Add a searched user to the chat dashboard
   const addUserToChats = async (user) => {
     const accessToken = localStorage.getItem("accessToken");
+
     try {
-      const response = await axios.post(
+      await axios.post(
         "http://localhost:5000/api/v1/chat/addSearchedUserToChat",
         { userId: user._id },
         {
@@ -97,11 +97,11 @@ const ChatDashboard = () => {
           },
         }
       );
-      console.log("User added to chats:", response.data);
+
       setUsers((prevUsers) => [...prevUsers, user]); // Update local state
-      setSearchResults(
-        (prevResults) => prevResults.filter((result) => result._id !== user._id) // Remove from search results
-      );
+      setSearchResults((prevResults) =>
+        prevResults.filter((result) => result._id !== user._id)
+      ); // Remove from search results
     } catch (error) {
       console.error(
         "Error adding user to chats:",
@@ -132,10 +132,10 @@ const ChatDashboard = () => {
           />
           <button onClick={handleSearch}>Search</button>
           <ul className="chat-list">
-            {Array.isArray(users) ? (
+            {Array.isArray(users) && users.length > 0 ? (
               users.map((user) => (
                 <li
-                  key={user._id} // Ensure user has an _id
+                  key={user._id}
                   className={`chat-item ${
                     selectedUser?._id === user._id ? "active" : ""
                   }`}

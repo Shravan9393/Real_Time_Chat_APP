@@ -1,41 +1,50 @@
 import React, { useState, useEffect } from "react";
 import "./chatWindow.css";
+import { io } from "socket.io-client"; // Import Socket.IO client
 import axios from "axios";
-import socket from "../../utils/socekt";
-
 
 const ChatWindow = ({ user }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
+  const [socket, setSocket] = useState(null);
 
-  // Fetch messages when the component mounts or when the user changes
   useEffect(() => {
-    const fetchMessages = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:5000/api/v1/message/getMessages/${user.id}`
-        );
-        setMessages(response.data.messages);
-      } catch (err) {
-        console.error("Error fetching messages:", err);
-      }
-    };
-    fetchMessages();
+    // Initialize Socket.IO client and connect to the server
+    const newSocket = io("http://localhost:5000", {
+      transports: ["websocket"], // Ensure WebSocket transport is used
+      withCredentials: true, // Allow credentials for CORS
+    });
+    setSocket(newSocket);
 
-    socket.emit("joinRoom", user.id);
-    socket.on("new message", (message) => {
+    // Handle successful connection
+    newSocket.on("connect", () => {
+      console.log("Connected to server with ID:", newSocket.id);
+
+      // Join the user's chat room
+      newSocket.emit("joinRoom", user.id);
+    });
+
+    // Handle new messages from the server
+    newSocket.on("new message", (message) => {
+      console.log("New message received:", message);
       setMessages((prevMessages) => [...prevMessages, message]);
     });
 
-    return () => {
-      socket.off("new message");
-      socket.emit("leaveRoom", user.id);
-    };
-  }, [user]);
+    // Handle disconnection
+    newSocket.on("disconnect", () => {
+      console.log("Disconnected from server");
+    });
 
+    // Cleanup when component unmounts
+    return () => {
+      newSocket.emit("leaveRoom", user.id); // Leave the room
+      newSocket.off(); // Remove all event listeners
+      newSocket.close(); // Close the socket connection
+    };
+  }, [user.id]);
 
   const handleSendMessage = () => {
-    if (newMessage.trim()) {
+    if (newMessage.trim() && socket) {
       const messageData = {
         sender: "You",
         text: newMessage,
@@ -45,16 +54,16 @@ const ChatWindow = ({ user }) => {
       // Emit the message to the server
       socket.emit("new message", messageData);
 
-      // Update the local message state
+      // Optimistically update the UI
       setMessages((prevMessages) => [...prevMessages, messageData]);
       setNewMessage("");
 
-      // Optionally, send the message to the backend
-      try {
-        axios.post("http://localhost:5000/api/v1/message/sendMessage", messageData);
-      } catch (err) {
-        console.error("Error sending message:", err);
-      }
+      // Save the message to the backend
+      axios
+        .post("http://localhost:5000/api/v1/message/sendMessage", messageData)
+        .catch((err) => {
+          console.error("Error sending message:", err);
+        });
     }
   };
 
