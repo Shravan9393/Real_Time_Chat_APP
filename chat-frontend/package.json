@@ -4,7 +4,12 @@
   "private": true,
   "dependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@chakra-ui/button": "^2.1.0",
+    "@chakra-ui/form-control": "^2.2.0",
+    "@chakra-ui/hooks": "^2.4.2",
+    "@chakra-ui/input": "^2.1.2",
     "@chakra-ui/layout": "^2.3.1",
+    "@chakra-ui/toast": "^7.0.2",
     "axios": "^1.7.9",
     "cra-template": "1.2.0",
     "react": "^19.0.0",
