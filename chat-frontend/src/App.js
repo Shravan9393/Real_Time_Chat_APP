@@ -1,84 +1,150 @@
+// import React, { useContext } from "react";
+// import { Routes, Route, Navigate } from "react-router-dom";
+// import { AuthProvider, AuthContext } from "./context/AuthContext";
+// import Navbar from "./components/common/navbar";
+// import RegisterPage from "./components/auth/RegisterPage";
+// import LoginPage from "./components/auth/loginPage";
+// import ChatDashboard from "./components/Pages/chatDashboard";
+
+// // ProtectedRoute Component
+// const ProtectedRoute = ({ element, redirectTo, reverse = false }) => {
+//   const { user, loading } = useContext(AuthContext);
+//   console.log("User in AuthContext, print from app.js file :", user, "loading:", loading); // Debugging 
+//   if (loading) {
+//     return <div>Loading...</div>; // Show a loading indicator while checking auth state
+//   }
+
+//   if (reverse) {
+//     return user ? <Navigate to={redirectTo}  /> : element;
+//   }
+//   console.log("ProtectedRoute called: ", { user, redirectTo, reverse });
+
+//   return user ? element : <Navigate to={redirectTo}  />;
+
+  
+// };
+
+// function App() {
+//   return (
+//     <AuthProvider>
+//       <div className="container">
+//         <Navbar />
+//         <Routes>
+//         <Route
+//               path="/"
+//               element={
+//                 <ProtectedRoute
+//                   element={<ChatDashboard />}
+//                   redirectTo="/register"
+//                 />
+//               }
+//             />
+//           {/* <Route path="/" element={<Navigate to="/register" replace />} /> */}
+//           <Route
+//             path="/register"
+//             element={
+//               <ProtectedRoute
+//                 element={<RegisterPage />}
+//                 redirectTo="/"
+//                 reverse
+//               />
+//             }
+//           />
+//           {/* Login page route */}
+//           <Route
+//             path="/login"
+//             element={
+//               <ProtectedRoute
+//                 element={<LoginPage />}
+//                 redirectTo="/"
+//                 reverse
+//               />
+//             }
+//           />
+//           {/* chat Dashboard page route */}
+//           <Route
+//             path="/chat"
+//             element={
+//               <ProtectedRoute element={<ChatDashboard />} redirectTo="/login" />
+//             }
+//           />
+//           {/* Redirect unknown paths to RegisterPage */}
+//           {/* <Route path="*" element={<Navigate to="/register" replace />} /> */}
+//         </Routes>
+//       </div>
+//     </AuthProvider>
+//   );
+// }
+
+// export default App;
+
+
+
+
+
+
+
+
 import React, { useContext } from "react";
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  Navigate,
-} from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, AuthContext } from "./context/AuthContext";
 import Navbar from "./components/common/navbar";
 import RegisterPage from "./components/auth/RegisterPage";
 import LoginPage from "./components/auth/loginPage";
-import ForgotPasswordPage from "./components/auth/ForgotPasswordPage";
-import ChatDashboard from "./components/chat/chatDashboard";
-import ProfilePage from "./components/profile/profilePage";
+import ChatDashboard from "./components/Pages/chatDashboard";
 
+// ProtectedRoute Component
 const ProtectedRoute = ({ element, redirectTo, reverse = false }) => {
-  const { user } = useContext(AuthContext);
+  const { user, loading } = useContext(AuthContext);
 
-  // Handle reverse condition for ProtectedRoute
-  if (reverse) {
-    return user ? <Navigate to={redirectTo} /> : element;
+  // Show a loading indicator while verifying auth state
+  if (loading) {
+    return <div>Loading...</div>;
   }
-  // Default ProtectedRoute check for authenticated user
-  return user ? element : <Navigate to={redirectTo} />;
+
+  // Debugging user state
+  console.log("ProtectedRoute:", { user, redirectTo, reverse });
+
+  // Handle reverse route logic
+  if (reverse) {
+    return user ? <Navigate to={redirectTo} replace /> : element;
+  }
+
+  // Default behavior for authenticated routes
+  return user ? element : <Navigate to={redirectTo} replace />;
 };
 
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <div className="container">
-          <Navbar />
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <ProtectedRoute
-                  element={<ChatDashboard />}
-                  redirectTo="/register"
-                />
-              }
-            />
-            <Route
-              path="/register"
-              element={
-                <ProtectedRoute
-                  element={<RegisterPage />}
-                  redirectTo="/"
-                  reverse
-                />
-              }
-            />
-            <Route
-              path="/login"
-              element={
-                <ProtectedRoute
-                  element={<LoginPage />}
-                  redirectTo="/"
-                  reverse
-                />
-              }
-            />
-            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-            <Route
-              path="/chat"
-              element={
-                <ProtectedRoute
-                  element={<ChatDashboard />}
-                  redirectTo="/login"
-                />
-              }
-            />
-            <Route
-              path="/profile"
-              element={
-                <ProtectedRoute element={<ProfilePage />} redirectTo="/login" />
-              }
-            />
-          </Routes>
-        </div>
-      </Router>
+      <div className="container">
+        <Navbar />
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute element={<ChatDashboard />} redirectTo="/login" />
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <ProtectedRoute
+                element={<RegisterPage />}
+                redirectTo="/"
+                reverse
+              />
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              <ProtectedRoute element={<LoginPage />} redirectTo="/" reverse />
+            }
+          />
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </Routes>
+      </div>
     </AuthProvider>
   );
 }

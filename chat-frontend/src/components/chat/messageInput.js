@@ -1,44 +1,44 @@
-import React, { useState, useContext } from "react";
-import { ChatContext } from "../../context/chatContext";
+// import React, { useState, useContext } from "react";
+// import { ChatContext } from "../../context/chatContext";
 
-const MessageInput = ({ onTyping }) => {
-  const [text, setText] = useState("");
-  const { sendMessage } = useContext(ChatContext);
+// const MessageInput = ({ onTyping }) => {
+//   const [text, setText] = useState("");
+//   const { sendMessage } = useContext(ChatContext);
 
-  const handleSend = () => {
-    if (text.trim()) {
-      sendMessage(text);
-      setText("");
-    }
-  };
+//   const handleSend = () => {
+//     if (text.trim()) {
+//       sendMessage(text);
+//       setText("");
+//     }
+//   };
 
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter") {
-      handleSend();
-    }
-  };
+//   const handleKeyPress = (e) => {
+//     if (e.key === "Enter") {
+//       handleSend();
+//     }
+//   };
 
-  const handleInputChange = (e) => {
-    setText(e.target.value);
+//   const handleInputChange = (e) => {
+//     setText(e.target.value);
 
-    // Notify the parent component about typing activity
-    if (onTyping) {
-      onTyping(e.target.value.trim() !== "");
-    }
-  };
+//     // Notify the parent component about typing activity
+//     if (onTyping) {
+//       onTyping(e.target.value.trim() !== "");
+//     }
+//   };
 
-  return (
-    <div className="message-input">
-      <input
-        type="text"
-        value={text}
-        onChange={handleInputChange}
-        onKeyPress={handleKeyPress}
-        placeholder="Type a message..."
-      />
-      <button onClick={handleSend}>Send</button>
-    </div>
-  );
-};
+//   return (
+//     <div className="message-input">
+//       <input
+//         type="text"
+//         value={text}
+//         onChange={handleInputChange}
+//         onKeyPress={handleKeyPress}
+//         placeholder="Type a message..."
+//       />
+//       <button onClick={handleSend}>Send</button>
+//     </div>
+//   );
+// };
 
-export default MessageInput;
+// export default MessageInput;
