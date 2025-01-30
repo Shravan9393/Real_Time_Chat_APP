@@ -1,4 +1,4 @@
-import React, {  useState, useContext } from "react";
+import React, { useState, useContext } from "react";
 // import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
@@ -58,8 +58,7 @@ const LoginPage = () => {
         message: `Error Occurred: ${error.response.data.message}`,
         type: "error",
       });
-      
-    }finally{
+    } finally {
       setLoading(false);
     }
   };
