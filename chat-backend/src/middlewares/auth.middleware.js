@@ -1,39 +1,40 @@
+
 import { ApiError } from "../utils/ApiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import JWT from "jsonwebtoken";
 import { User } from "../models/user.models.js";
 
 export const verifyJWT = asyncHandler(async (req, res, next) => {
+  const token =
+    req.cookies?.accessToken ||
+    req.header("Authorization")?.replace("Bearer ", "");
+
+  console.log("Token received in auth.middleware.js file :", token);
+
+  if (!token) {
+    throw new ApiError(401, "Unauthorized request: Token is missing in auth.middleware.js file"); 
+  }
+
   try {
-    const token =
-      req.cookies?.accessToken ||
-      req.header("Authorization")?.replace("Bearer ", "");
-
-    if (!token) {
-      console.log("Token not provided");
-      throw new ApiError(401, "Unauthorized request");
-    }
-
-    console.log("Token received:", token);
-
     const decodedToken = JWT.verify(token, process.env.ACCESS_TOKEN_SECRET);
 
-    console.log("Decoded Token:", decodedToken);
-
-const user = await User.findById(decodedToken?._id).select(
-  " -password -refreshToken"
-);
-
+    const user = await User.findById(decodedToken._id).select(
+      "-password -refreshToken"
+    );
     if (!user) {
-      console.log("User not found for token:", decodedToken?._id);
-      throw new ApiError(401, "Invalid Access Token");
+      throw new ApiError(401, "Invalid Access Token: User not found");
     }
 
-    req.user = user;
+    req.user = user; // Attach user to the request object
     next();
   } catch (error) {
-    console.error("Token verification error:", error.message);
-    throw new ApiError(401, error?.message || "Invalid access token");
+    console.error("Token verification error in auth.middleware.js file:", error.message);
+    if (error.name === "JsonWebTokenError") {
+      throw new ApiError(401, "Invalid Access Token");
+    } else if (error.name === "TokenExpiredError") {
+      throw new ApiError(401, "Access Token expired");
+    } else {
+      throw new ApiError(401, error.message || "Unauthorized request");
+    }
   }
 });
-
