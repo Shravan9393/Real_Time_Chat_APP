@@ -76,7 +76,6 @@
 
 // export default Navbar;
 
-
 import React, { useContext } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
@@ -87,6 +86,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const { user, logout } = useContext(AuthContext);
 
+  
   const handleLogout = () => {
     logout(); // Clear user data and context state
     navigate("/login"); // Redirect to login page

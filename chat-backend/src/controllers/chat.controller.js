@@ -125,11 +125,11 @@ const getChatHistory = asyncHandler ( async (req, res) => {
                 path: "newMessage.sender",
                 select: "username email fullName avatar",
             });
-            return res
-            .status(200)
-            .json(
-                new ApiResponse(200, { chat: finalChat }, "Chat history fetched successfully")
+            console.log("Fetched chat history from DB:", finalChat);
+            return res.status(200).json(
+              new ApiResponse(200, { chats: finalChat }, "Chat history fetched successfully")
             );
+
     
     } catch (error) {
         throw new ApiError(500,error, "Failed to fetch chat history");
