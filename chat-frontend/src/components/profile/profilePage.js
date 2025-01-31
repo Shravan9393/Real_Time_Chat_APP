@@ -49,9 +49,6 @@
 
 // export default ProfilePage;
 
-
-
-
 import React, { useState } from "react";
 
 const ProfilePage = ({ user, children }) => {
