@@ -1,5 +1,5 @@
 .chat-container {
-  max-height: 400px; /* Adjust height as needed */
+  flex: 1; /* Allow the container to take up available vertical space */
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -16,30 +16,31 @@
 }
 
 .avatar {
+  width: 40px;
+  height: 40px;
   margin-right: 8px;
+  border-radius: 50%;
+  overflow: hidden;
 }
 
-.avatar-image {
-  width: 30px;
-  height: 30px;
+.avatar img {
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
   object-fit: cover;
-  border: 1px solid #ccc;
+  border: none;
 }
 
 .message-bubble {
   padding: 8px 12px;
-  border-radius: 20px;
+  border-radius: 10px;
   max-width: 75%;
   word-wrap: break-word;
 }
 
-.message-bubble.sent {
-  background-color: #bee3f8;
-  align-self: flex-end;
-}
-
-.message-bubble.received {
-  background-color: #b9f5d0;
-  align-self: flex-start;
+.message-timestamp {
+  font-size: 10px;
+  color: #999;
+  margin-top: 2px;
+  text-align: right;
 }
