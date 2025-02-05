@@ -86,9 +86,13 @@ export const getSender = (loggedUser, chat) => {
     return "Invalid Chat";
   }
 
-  return chat.users[0]._id === loggedUser._id
-    ? chat.users[1].name
-    : chat.users[0].name;
+  // return chat.users[0]._id === loggedUser._id
+  //   ? chat.users[1].name
+  //   : chat.users[0].name;
+
+   return (
+     chat.users.find((u) => u._id !== loggedUser._id)?.fullName || "Unknown"
+   );
 };
 
 

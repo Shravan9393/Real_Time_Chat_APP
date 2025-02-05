@@ -41,7 +41,7 @@ const addSearchedUserToChat = asyncHandler(async (req, res) => {
 
         // If no chat exists, create a new one
         const newChat = await Chat.create({
-            chatName: "sender",
+            // chatName: "user.fullName",
             users: [userId, currentUserId],
             isGroupChat: false,
         });
@@ -89,7 +89,7 @@ const getChatAccess = asyncHandler( async (req, res) => {
         );
     }else{
         newChatData = {
-          chatName: "sender",
+        //   chatName: "sender",
           users: [userId, req.user._id],
           isGroupChat : false,
         };
