@@ -1,79 +1,54 @@
-
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { ChatState } from "../../context/chatContext";
 import ChatLoading from "./chatLoading";
 import { getSender } from "./chatLogic";
 import axiosInstance from "../../utils/api";
 
 const MyChats = ({ fetchAgain }) => {
-  const [loggedUser, setLoggedUser] = useState();
-
-  console.table("the logged user is", loggedUser, "the type of logged user is", typeof loggedUser);  // giving the undefined value for both the data and type
-
+  // Remove local loggedUser state; use the context "user" instead.
   const { selectedChat, setSelectedChat, chats, setChats, user } = ChatState();
 
-  
-  console.table(
-    "the selected chat is", selectedChat,  //giving the null value
-    "the type of selected chat is", typeof selectedChat,  // type of selected chat is object
-    "the chats is", chats,  // somethis coming as array with length 0
-    "the type of chats is", typeof chats, // object
-    "the user is", user,  // logined user showing
-    "the type of user is", typeof user  // object
-  );
-
   // Fetch Chat History
-
   const fetchChats = async () => {
-    console.log("this is user id from mychats whose chat history are fetched", user._id);
+    if (!user) return;
+    console.log("Fetching chats for user:", user._id);
     try {
-      const { data } = await axiosInstance.get("/chat/getChatHistory");
+      const config = {
+        headers: { Authorization: `Bearer ${user.accessToken}` },
+      };
+      const { data } = await axiosInstance.get("/chat/getChatHistory", config);
 
-      console.log("✅ this is type of data , of chathistory , in mychat.js ",typeof data);
-      console.log("Fetched chats:", data); // Debugging log: Check what the API returns
+      console.log("Fetched chats:", data); // Debug: Check API response
 
-      console.log("this is chat data from mychat.js which is setChats", data.data.chat);
-      setChats(data.data.chat || []);
-
-      // console.log("API response in my chat.js file:", data);
-
-      // if (Array.isArray(data.data.chats)) {
-      //   setChats(data.data.chats);
-      // } else {
-      //   console.error(
-      //     "Error: Expected chats to be an array but got:",
-      //     typeof data.data.chats
-      //   );
-      //   setChats([]);
-      // }
-
+      // Make sure you set the chats from the proper property.
+      if (data.data.chats && data.data.chats.length > 0) {
+        setChats(data.data.chats);
+      } else {
+        console.warn("⚠️ No chats received from server!");
+        setChats([]); // Set empty array if none are received
+      }
     } catch (error) {
-      alert("❌Error Occurred: Failed to load the chats");
+      alert("❌ Error Occurred: Failed to load the chats");
+      console.error("Fetch chats error:", error);
     }
   };
 
+  // Re-fetch chats when "fetchAgain" or "user" changes
   useEffect(() => {
-    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-    console.log("this is user info from mychats", userInfo);
-    setLoggedUser(userInfo);
-    
-    if (userInfo) {
+    if (user) {
       fetchChats();
     }
-    // eslint-disable-next-line
-  }, [fetchAgain]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fetchAgain, user]);
 
-  // // Make sure loggedUser and chat are available before calling getSender
-  // chats.forEach((chat, index) => {
-  //   console.log(`Chat ${index}:`, chat);
-  //   console.log(`Type of Chat ${index}:`, typeof chat);
-  // });
-
+  // Render the sender's name using the helper.
+  // Use the "user" from context instead of a separate "loggedUser".
   const renderSender = (chat) => {
-    if (loggedUser && chat) {
-      return !chat.isGroupChat ? getSender(loggedUser, chat) : chat.chatName;
+    console.log("Rendering chat:", chat); // Debugging log
+    if (user && chat) {
+      return !chat.isGroupChat ? getSender(user, chat) : chat.chatName;
     } else {
-      return "Loading..."; // Handle loading or missing data
+      return "Loading..."; // This should not remain if user and chat are defined.
     }
   };
 
@@ -118,8 +93,8 @@ const MyChats = ({ fetchAgain }) => {
           overflowY: "hidden",
         }}
       >
-        {chats ? (
-          <div style={{ overflowY: "scroll" }}>
+        {chats && chats.length > 0 ? (
+          <div style={{ overflowY: "scroll", maxHeight: "100%" }}>
             {chats.map((chat) => (
               <div
                 key={chat._id}
@@ -127,21 +102,19 @@ const MyChats = ({ fetchAgain }) => {
                 style={{
                   cursor: "pointer",
                   backgroundColor:
-                    selectedChat === chat ? "#38B2AC" : "#E8E8E8",
-                  color: selectedChat === chat ? "white" : "black",
+                    selectedChat && selectedChat._id === chat._id
+                      ? "#38B2AC"
+                      : "#E8E8E8",
+                  color:
+                    selectedChat && selectedChat._id === chat._id
+                      ? "white"
+                      : "black",
                   padding: "12px",
                   borderRadius: "8px",
                   marginBottom: "8px",
                 }}
               >
-                {/* <div>
-                  {!chat.isGroupChat
-                    ? getSender(loggedUser, chat)
-                    : chat.chatName}
-                </div> */}
-
                 <div>{renderSender(chat)}</div>
-
                 {chat.latestMessage && (
                   <div style={{ fontSize: "12px" }}>
                     <b>{chat.latestMessage.sender.name}:</b>{" "}
@@ -162,4 +135,3 @@ const MyChats = ({ fetchAgain }) => {
 };
 
 export default MyChats;
-
