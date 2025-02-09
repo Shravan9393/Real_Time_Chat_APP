@@ -1,11 +1,10 @@
 .chat-window {
   display: none;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;  /* Children take full width */
   padding: 16px;
   background-color: white;
-  width: 100%;
-  max-width: 68%;
+  flex: 1;
   border-radius: 8px;
   border: 1px solid #ccc;
   box-sizing: border-box;
@@ -15,6 +14,7 @@
   display: flex;
 }
 
+/* Container for the list of messages */
 .message-container {
   display: flex;
   flex-direction: column;
@@ -24,20 +24,25 @@
   padding: 10px;
 }
 
+/* Base style for a message bubble */
 .message {
   max-width: 75%;
   padding: 10px;
   border-radius: 10px;
   margin: 5px;
   font-size: 14px;
+  /* Display as inline-block to shrink-wrap content */
+  display: inline-block;
 }
 
+/* For messages you send – aligned to the right */
 .sent {
   background-color: #dcf8c6;
   align-self: flex-end;
   text-align: right;
 }
 
+/* For messages from the other person – aligned to the left */
 .received {
   background-color: #ffffff;
   align-self: flex-start;
