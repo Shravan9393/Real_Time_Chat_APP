@@ -3,6 +3,7 @@
   flex-direction: column;
   width: 100%;
   height: 100%;
+  /* background-color: rgb(237, 35, 4); */
 }
 
 .chat-header {
@@ -11,14 +12,19 @@
   align-items: center;
   padding: 10px;
   background-color: #f0f0f0;
+  border-radius: 8px;
   border-bottom: 1px solid #ccc;
 }
 
 .back-button {
-  background: none;
+  /* background: none; */
   border: none;
-  font-size: 20px;
+  font-size: 25px;
   cursor: pointer;
+}
+
+.back-button:hover {
+  color: #c02222;
 }
 
 .chat-box {
@@ -27,7 +33,7 @@
   justify-content: flex-end;
   height: 100%;
   padding: 10px;
-  background-color: #e8e8e8;
+  background: rgba(217, 168, 45, 0.25);
   border-radius: 8px;
   overflow-y: hidden;
 }
@@ -36,18 +42,19 @@
   flex: 1;
   overflow-y: auto;
   margin-bottom: 10px;
+  /* background: rgba(216, 189, 145, 0.25); */
 }
 
 .message-input {
   padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  border: 2px solid #000203;
+  border-radius: 8px;
   width: 100%;
 }
 
 .typing-indicator {
   font-size: 12px;
-  color: gray;
+  color: rgb(22, 255, 1);
 }
 
 .no-chat-selected {
@@ -56,7 +63,7 @@
   justify-content: center;
   height: 100%;
   font-size: 18px;
-  color: gray;
+  color: rgb(128, 128, 128);
 }
 
 .spinner {

@@ -199,39 +199,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     // eslint-disable-next-line
   }, [selectedChat]);
 
-  // useEffect(
-  //   () => {
-  //     socket.on("message received", (newMessageReceived) => {
-  //       if (
-  //         !selectedChatCompare ||
-  //         selectedChatCompare._id !== newMessageReceived.chat._id
-  //       ) {
-  //         if (!notification.includes(newMessageReceived)) {
-  //           setNotification([newMessageReceived, ...notification]);
-  //           setFetchAgain(!fetchAgain);
-  //         }
-  //       } else {
-  //         setMessages([...messages, newMessageReceived]);
-  //       }
-  //     });
-  //   },
-  //   // eslint-disable-next-line
-  //   [
-  //     // messages,
-  //     // notification,
-  //     // selectedChatCompare,
-  //     // fetchAgain,
-  //     // setFetchAgain,
-  //     // setNotification,
-  //   ]
-  // );
-
-  // console.log("selectedChat:", selectedChat);
-  // console.log(
-  //   "Type of selectedChat:",
-  //   Array.isArray(selectedChat) ? "Array" : "Object"
-  // );
-
+ 
   useEffect(() => {
     socket.on("message received", (newMessageReceived) => {
       if (
@@ -254,51 +222,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     };
   }, [notification, fetchAgain]);
 
-  //   return (
-  //     <div className="single-chat-container">
-  //       {selectedChat ? (
-  //         <>
-  //           <div className="chat-header">
-  //             <button className="back-button" onClick={() => setSelectedChat("")}>
-  //               &#8592;
-  //             </button>
-  //             {messages &&
-  //               (!selectedChat.isGroupChat ? (
-  //                 <>
-  //                   <span>{getSender(user, selectedChat)}</span>
-  //                   {/* Profile page link or modal */}
-  //                 </>
-  //               ) : (
-  //                 <span>{selectedChat.chatName.toUpperCase()}</span>
-  //               ))}
-  //           </div>
-  //           <div className="chat-box">
-  //             {loading ? (
-  //               <div className="spinner">Loading...</div>
-  //             ) : (
-  //               <div className="messages">
-  //                 <ScrollChat messages={messages} />
-  //               </div>
-  //             )}
-  //             {isTyping && <div className="typing-indicator">Typing...</div>}
-  //             <input
-  //               type="text"
-  //               className="message-input"
-  //               placeholder="Enter a message..."
-  //               value={newMessage}
-  //               onChange={typingHandler}
-  //               onKeyDown={sendMessage}
-  //             />
-  //           </div>
-  //         </>
-  //       ) : (
-  //         <div className="no-chat-selected">
-  //           Click on a user to start chatting.
-  //         </div>
-  //       )}
-  //     </div>
-  //   );
-  // };
+  
 
   return (
     <div className="single-chat-container">
