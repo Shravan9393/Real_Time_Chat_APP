@@ -11,7 +11,7 @@
 .chat-main {
   flex: 1;
   display: flex;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   padding: 10px;
   overflow: hidden;
   background-color: #fff;
@@ -25,3 +25,7 @@
   border-bottom: 1px solid #ddd;
 }
 */
+
+.my-chats{
+  width: 30%;
+}
