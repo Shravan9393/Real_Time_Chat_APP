@@ -73,8 +73,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
       console.log("done the setLoading false in single chat.js file");
 
-      // socket.emit("join chat", selectedChat._id);
-
       if (selectedChat && selectedChat._id) {
         socket.emit("join chat", selectedChat._id);
       }
@@ -107,7 +105,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             Authorization: `Bearer ${user.accessToken}`,
           },
         };
-        // setNewMessage("");
+       
 
         console.log("checking befor sending the message to api ");
         console.log("the message content is : ", newMessage);
@@ -130,9 +128,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           typeof data
         );
 
-        // adding some new code
-        // //////////////////////////////////////////
-
+   
         // Get the actual message object from the API response
         const messageObj = data.data.message;
 
@@ -142,14 +138,9 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           chat: messageObj.chatId, // duplicate the chat info under the property 'chat'
         };
 
-        // //////////////////////////////////////////
-
-        // socket.emit("new message", data);
-        // socket.emit("new message", data.data.message);
+ 
         socket.emit("new message", messageToEmit);
 
-        // setMessages([...messages, data]);
-        // setMessages((prevMessages) => [...prevMessages, data]); // Update messages properly
 
         // Update the local state with the new message:
 
