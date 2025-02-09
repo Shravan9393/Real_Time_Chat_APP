@@ -1,12 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-// import { AuthContext } from "../../context/AuthContext";
-
 import axiosInstance from "../../utils/api.js";
-// import "./auth.css";
+
 
 const RegisterPage = () => {
-  // const  login  = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
