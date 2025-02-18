@@ -1,0 +1,151 @@
+/* login.css */
+body{
+    background-color: #003333;
+}
+
+
+.container {
+  margin-top: 12px;
+  padding: 20px;
+  border-radius: 5px;
+}
+
+.login-page {
+  max-width: 400px;
+  margin-top: 5rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 20px;
+  background: rgba( 64, 102, 103, 0.25 );
+box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+backdrop-filter: blur( 4px );
+-webkit-backdrop-filter: blur( 4px );
+border-radius: 10px;
+border: 1px solid rgba( 255, 255, 255, 0.18 );
+}
+
+
+
+.form-group {
+  margin-bottom: 15px;
+  font-size: larger;
+  color: white;
+
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+input[type="email"],
+input[type="password"],
+input[type="text"] {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #003333;
+  border-radius: 8px;
+}
+
+.password {
+  display: flex;
+  align-items: center;
+}
+
+.password input {
+  flex: 1;
+}
+
+.password button {
+  margin-left: 5px;
+  color: thistle;
+  font-size: small;
+  font-weight: 600;
+  padding: 8px;
+  background: #38776f;
+  border: 1px solid #003333;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.password button:hover {
+  background: #4A646c;
+}
+
+.submit-button {
+  font-size: medium;
+  font-weight: 700;
+  width: 100%;
+  padding: 10px;
+  background: #4caf50;
+  color: white;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.submit-button:hover {
+  background: #45a049;
+}
+
+.submit-button:disabled {
+  background: #45a049;
+  cursor: not-allowed;
+}
+
+.guest-credentials-button {
+  width: 100%;
+  font-size: medium;
+  font-weight: 700;
+  padding: 10px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.guest-credentials-button:hover {
+  background: #45a049;
+}
+
+.register-link {
+  text-align: center;
+  margin-top: 10px;
+  font-size: large;
+  color: white;
+}
+
+.register-link a {
+  color: #4caf50;
+  text-decoration: none;
+}
+
+
+.register-link a:hover{
+    color: aqua;
+}
+
+.notification {
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid;
+  border-radius: 4px;
+}
+
+.notification-error {
+  color: red;
+  border-color: red;
+}
+
+.notification-success {
+  color: green;
+  border-color: green;
+}
+
+.notification-warning {
+  color: orange;
+  border-color: orange;
+}

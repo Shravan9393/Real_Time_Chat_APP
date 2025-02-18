@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/api.js";
+import "../styles/auth.css";
 
 
 const RegisterPage = () => {
