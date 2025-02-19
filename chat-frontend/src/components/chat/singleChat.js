@@ -21,16 +21,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const { selectedChat, setSelectedChat, user, notification, setNotification } =
     ChatState();
 
-  console.table(
-    "the selected chat is single chat.js file",
-    selectedChat, // coming null just after logined
-    "the type of selected chat is",
-    typeof selectedChat, //object
-    "the user is",
-    user, //showing logined user
-    "the type of user is",
-    typeof user // object
-  );
+  
 
   const fetchMessages = async () => {
     if (!selectedChat) return;
@@ -42,36 +33,22 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         },
       };
 
-      console.log(
-        "Selected Chat ID from single chat.js before setLoading",
-        selectedChat._id
-      );
+      
 
       setLoading(true);
 
-      console.log(
-        "selected Chat ID from single chat.js after setLoading",
-        selectedChat._id
-      );
 
       const { data } = await axiosInstance.get(
         `/message/getMessages/${selectedChat._id}`,
         config
       );
 
-      console.log(
-        "this is messages data of that chatId before in singleCHat.js file setMessages data",
-        data
-      );
+      
       setMessages(data.data.messages);
 
-      console.log(
-        "this is messages data of that chatId after setMessages in singleChat.js file data",
-        data
-      );
+
       setLoading(false);
 
-      console.log("done the setLoading false in single chat.js file");
 
       if (selectedChat && selectedChat._id) {
         socket.emit("join chat", selectedChat._id);
@@ -96,7 +73,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
       const messageToSend = newMessage; // Store newMessage before clearing
 
-      console.log("this is messageToSend", messageToSend);
 
       try {
         const config = {
@@ -107,9 +83,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         };
        
 
-        console.log("checking befor sending the message to api ");
-        console.log("the message content is : ", newMessage);
-        console.log("the chatId is : ", selectedChat._id);
 
         const { data } = await axiosInstance.post(
           "/message/sendMessage",
@@ -119,13 +92,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           },
 
           config
-        );
-
-        console.table(
-          "this is the message data which is going to send , it's printing before emitting the data",
-          data,
-          " and type of data is ",
-          typeof data
         );
 
    

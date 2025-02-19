@@ -66,6 +66,8 @@ const registerUser = asyncHandler( async (req, res) => {
         throw new ApiError(400, "Avatar is required, file is missing");
     }
 
+    console.log("avatarLocalPath:", avatarLocalPath);
+
     // Upload avatar and cover image to cloudinary
 
     const avatar = await uploadOnCloudinary(avatarLocalPath);
