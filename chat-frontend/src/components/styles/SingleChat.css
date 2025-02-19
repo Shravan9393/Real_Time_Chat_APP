@@ -11,7 +11,9 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px;
-  background-color: #f0f0f0;
+  background-color: #003333;
+  color: white;
+  font-family: 'Times New Roman', Times, serif;
   border-radius: 8px;
   border-bottom: 1px solid #ccc;
 }
@@ -33,7 +35,7 @@
   justify-content: flex-end;
   height: 100%;
   padding: 10px;
-  background: rgba(217, 168, 45, 0.25);
+  background: #003333;
   border-radius: 8px;
   overflow-y: hidden;
 }
@@ -47,7 +49,7 @@
 
 .message-input {
   padding: 10px;
-  border: 2px solid #000203;
+  border: 2px solid #033333;
   border-radius: 8px;
   width: 100%;
 }
@@ -69,4 +71,9 @@
 .spinner {
   text-align: center;
   font-size: 18px;
+}
+
+
+.typing-indicator{
+  color: #ccc;
 }
