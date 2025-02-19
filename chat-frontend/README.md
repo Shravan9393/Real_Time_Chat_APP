@@ -14,10 +14,10 @@ This is the frontend of the Real-Time Chat Application, built using React.js. Th
 ## Screenshots
 
 1. **Register Page**  
-   ![Register Page](Real_Time_chat\chat-frontend\screenshots\register.png)
+   ![Register Page](./screenshots/register.png)
 
 2. **Login Page**  
-   ![Login Page](Real_Time_chat\screenshots\login.png)
+   ![Login Page](./screenshots/login.png)
 
 3. **Chat Dashboard**  
    ![Chat Dashboard](./screenshots/chatDashboard.png)
