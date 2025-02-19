@@ -23,7 +23,7 @@ This is the frontend of the Real-Time Chat Application, built using React.js. Th
    ![Chat Dashboard](./screenshots/chatDashboard.png)
 
 4. **Chat Window**  
-   ![Chat Window](./screenshots/chat_window.png)
+   ![Chat Window](./screenshots/chatWindow.png)
 
 5. **Chats**  
    ![Chats](./screenshots/chats.png)
